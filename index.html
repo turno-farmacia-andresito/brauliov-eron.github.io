@@ -1,77 +1,44 @@
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #1e3c52, #2c5364);
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmacia de Turno - Andresito</title>
 
-.card {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(18px);
-  width: 92%;
-  max-width: 460px;
-  padding: 28px;
-  border-radius: 24px;
-  text-align: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-}
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
 
-h1 {
-  color: #ffffff;
-  font-size: 24px;
-  margin-bottom: 10px;
-}
+<body>
 
-.info-turno {
-  font-size: 14px;
-  color: #e6f4ff;
-  line-height: 1.5;
-  margin-bottom: 15px;
-}
+  <div class="card">
+    <h1>Farmacia de Turno</h1>
 
-.estado {
-  background: #22c55e;
-  color: white;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  margin-bottom: 15px;
-  display: inline-block;
-}
+    <p class="info-turno">
+      🕗 Turnos vigentes: 08:00 → 08:00 del día siguiente.
+      El sistema muestra el turno según el día en que inició.
+    </p>
 
-.fecha {
-  color: #ffffff;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
+    <div class="estado">
+      🟢 Turno activo ahora
+    </div>
 
-.farmacia {
-  color: #ffffff;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 25px;
-}
+    <div id="fecha" class="fecha"></div>
 
-.btn {
-  width: 100%;
-  padding: 16px;
-  border-radius: 14px;
-  border: none;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 14px;
-}
+    <div id="farmacia" class="farmacia">
+      Cargando turno...
+    </div>
 
-.btn-maps {
-  background: #3b82f6;
-  color: white;
-}
+    <button id="btn-maps" class="btn btn-maps">
+      📍 Cómo llegar
+    </button>
 
-.btn-wpp {
-  background: #25D366;
-  color: white;
-}
+    <button id="btn-wpp" class="btn btn-wpp">
+      💬 WhatsApp
+    </button>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
