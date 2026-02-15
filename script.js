@@ -4,66 +4,53 @@ async function cargarTurno() {
   try {
     const response = await fetch(csvURL);
     const data = await response.text();
-
     const filas = data.split("\n").slice(1);
 
     const ahora = new Date();
-    const hora = ahora.getHours();
+    const horaActual = ahora.getHours();
 
-    // Cambio de turno a las 08:00
-    if (hora < 8) {
+    // Si es antes de las 08:00, restamos un día
+    if (horaActual < 8) {
       ahora.setDate(ahora.getDate() - 1);
     }
 
-    const fechaHoy = ahora.toISOString().split("T")[0];
-
-    let farmaciaHoy = null;
-
-    filas.forEach(fila => {
-      const columnas = fila.split(",");
-      const fecha = columnas[0]?.trim();
-      const farmacia = columnas[1];
-      const maps = columnas[2];
-      const whatsapp = columnas[3];
-
-      if (fecha === fechaHoy) {
-        farmaciaHoy = { farmacia, maps, whatsapp };
-      }
-    });
-
-    const fechaElemento = document.getElementById("fecha");
-    const contenidoElemento = document.getElementById("contenido");
-
-    fechaElemento.innerText = ahora.toLocaleDateString("es-AR", {
+    const fechaFormateada = ahora.toLocaleDateString("es-AR", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric"
     });
 
-    if (farmaciaHoy) {
-      contenidoElemento.innerHTML = `
-        <div class="nombre-farmacia">${farmaciaHoy.farmacia}</div>
+    document.getElementById("fecha").textContent = fechaFormateada;
 
-        <button id="btnMaps" class="btn-maps">📍 Cómo llegar</button>
-        <button id="btnWhats" class="btn-whats">💬 WhatsApp</button>
-      `;
+    const fechaISO = ahora.toISOString().split("T")[0];
 
-      document.getElementById("btnMaps").onclick = () => {
-        window.open(farmaciaHoy.maps, "_blank");
-      };
+    const filaHoy = filas.find(fila => fila.includes(fechaISO));
 
-      document.getElementById("btnWhats").onclick = () => {
-        window.open(farmaciaHoy.whatsapp, "_blank");
-      };
-
-    } else {
-      contenidoElemento.innerText = "No hay turno cargado.";
+    if (!filaHoy) {
+      document.getElementById("farmacia").textContent = "No hay turno cargado.";
+      return;
     }
 
+    const columnas = filaHoy.split(",");
+
+    const nombre = columnas[1];
+    const maps = columnas[2];
+    const wpp = columnas[3];
+
+    document.getElementById("farmacia").textContent = nombre;
+
+    document.getElementById("btn-maps").onclick = () => {
+      window.open(maps, "_blank");
+    };
+
+    document.getElementById("btn-wpp").onclick = () => {
+      window.open(wpp, "_blank");
+    };
+
   } catch (error) {
-    console.error("Error cargando el turno:", error);
-    document.getElementById("contenido").innerText = "Error cargando datos.";
+    document.getElementById("farmacia").textContent = "Error cargando datos.";
+    console.error(error);
   }
 }
 
