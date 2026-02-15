@@ -4,60 +4,46 @@ async function cargarTurno() {
   try {
     const response = await fetch(csvURL);
     const data = await response.text();
-    const filas = data.split("\n").slice(1);
+
+    const filas = data.split("\n").map(f => f.split(","));
 
     const ahora = new Date();
-    const horaActual = ahora.getHours();
+    let fechaTurno = new Date(ahora);
 
-    // Fondo dinámico día/noche
-    if (horaActual >= 8 && horaActual < 20) {
-      document.body.classList.add("dia");
-    } else {
-      document.body.classList.add("noche");
+    if (ahora.getHours() < 8) {
+      fechaTurno.setDate(fechaTurno.getDate() - 1);
     }
 
-    // Ajuste turno 08:00
-    if (horaActual < 8) {
-      ahora.setDate(ahora.getDate() - 1);
-    }
-
-    const fechaFormateada = ahora.toLocaleDateString("es-AR", {
+    const fechaTexto = fechaTurno.toLocaleDateString("es-AR", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric"
     });
 
-    document.getElementById("fecha").textContent = fechaFormateada;
+    document.getElementById("fecha").innerText = fechaTexto;
 
-    const fechaISO = ahora.toISOString().split("T")[0];
+    const fechaBuscada = fechaTurno.toISOString().split("T")[0];
 
-    const filaHoy = filas.find(fila => fila.includes(fechaISO));
+    const filaTurno = filas.find(f => f[0] === fechaBuscada);
 
-    if (!filaHoy) {
-      document.getElementById("farmacia").textContent = "No hay turno cargado.";
-      return;
+    if (filaTurno) {
+      document.getElementById("farmacia").innerText = filaTurno[1];
+
+      document.getElementById("btn-maps").onclick = () => {
+        window.open(filaTurno[2], "_blank");
+      };
+
+      document.getElementById("btn-wpp").onclick = () => {
+        window.open(filaTurno[3], "_blank");
+      };
+
+    } else {
+      document.getElementById("farmacia").innerText = "No hay turno cargado.";
     }
 
-    const columnas = filaHoy.split(",");
-
-    const nombre = columnas[1];
-    const maps = columnas[2];
-    const wpp = columnas[3];
-
-    document.getElementById("farmacia").textContent = nombre;
-
-    document.getElementById("btn-maps").onclick = () => {
-      window.open(maps, "_blank");
-    };
-
-    document.getElementById("btn-wpp").onclick = () => {
-      window.open(wpp, "_blank");
-    };
-
   } catch (error) {
-    document.getElementById("farmacia").textContent = "Error cargando datos.";
-    console.error(error);
+    console.error("Error cargando datos:", error);
   }
 }
 
